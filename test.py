@@ -1,27 +1,31 @@
+# exploit.py
+
 import os
 import subprocess
 import pickle
 import base64
 import tempfile
 
-# 🔥 Command injection
-def dangerous_os(user_input):
-    os.system("echo " + user_input)
+# 🔥 1. Command injection
+def run_os_command(user_input):
+    os.system("ping " + user_input)
 
-# 🔥 Shell injection
-def dangerous_subprocess(user_input):
-    subprocess.call("ls " + user_input, shell=True)
+# 🔥 2. Shell injection
+def run_subprocess_command(user_input):
+    subprocess.call("ping " + user_input, shell=True)
 
-# 🔥 Unsafe deserialization
-def unsafe_pickle():
-    data = pickle.loads(base64.b64decode("gASV..."))  # truncated payload
+# 🔥 3. Unsafe deserialization
+def deserialize_data():
+    payload = b"gANjc3lzdGVtCkV4ZWN1dGUKcQApgXEBdS4="
+    pickle.loads(payload)
 
-# 🔥 Insecure temp file
+# 🔥 4. Insecure temporary file creation
 def unsafe_tempfile():
-    with tempfile.NamedTemporaryFile(delete=False) as f:
-        f.write(b"some secret stuff")
+    tmp = tempfile.NamedTemporaryFile(delete=False)
+    tmp.write(b"secret")
+    tmp.close()
 
-# 🔥 Hardcoded credentials
-def leak():
-    token = "ghp_1234567890abcdef"
-    return token
+# 🔥 5. Hardcoded secret
+def leaked_token():
+    secret = "ghp_fakeHardcodedSecret_1234567890"
+    return secret
