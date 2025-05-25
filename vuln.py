@@ -2,9 +2,16 @@
 import os
 import subprocess
 
-def run_command(user_input):
-    # Intentional CodeQL-detectable command injection vulnerability
-    os.system("echo " + user_input)
+def vulnerable_os_call(user_input):
+    os.system("echo " + user_input)  # 🔥 CodeQL will flag this (command injection)
 
-def another_insecure_func(user_input):
-    subprocess.call("ls " + user_input, shell=True)
+def vulnerable_subprocess_call(user_input):
+    subprocess.call("ls " + user_input, shell=True)  # 🔥 CodeQL alert
+
+def insecure_compare(pwd1, pwd2):
+    if pwd1 == pwd2:  # 🔥 weak equality check (CodeQL flags known in some configs)
+        print("Passwords match")
+
+def hardcoded_secret():
+    api_key = "sk_live_hardcoded_key"  # 🔥 Secret scanning alert
+    return api_key
